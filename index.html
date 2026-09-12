@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cât de norocos ești azi?</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b, #312e81);
+      color: white;
+      overflow-x: hidden;
+    }
+    .card {
+      width: min(92%, 520px);
+      background: rgba(255,255,255,.09);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,.16);
+      box-shadow: 0 25px 60px rgba(0,0,0,.35);
+      border-radius: 28px;
+      padding: 32px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    h1 { margin-top: 0; font-size: clamp(2rem, 7vw, 3.2rem); line-height: 1; }
+    .subtitle { color: #cbd5e1; margin-bottom: 24px; }
+    input {
+      width: 100%; border: 0; outline: 0; padding: 16px 18px; font-size: 1rem;
+      border-radius: 16px; margin-bottom: 14px; background: rgba(255,255,255,.95); color: #111827;
+    }
+    button {
+      width: 100%; border: 0; padding: 16px; border-radius: 16px; font-weight: 800;
+      font-size: 1.05rem; cursor: pointer; color: white;
+      background: linear-gradient(90deg,#8b5cf6,#ec4899);
+      box-shadow: 0 12px 30px rgba(236,72,153,.25);
+      transition: .2s transform, .2s filter;
+    }
+    button:hover { transform: translateY(-2px) scale(1.01); filter: brightness(1.08); }
+    #result { display: none; margin-top: 24px; animation: pop .45s ease; }
+    @keyframes pop {
+      from { opacity: 0; transform: scale(.92) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .score { font-size: 4.5rem; font-weight: 900; margin: 8px 0 0; text-shadow: 0 8px 30px rgba(255,255,255,.15); }
+    .label { color: #cbd5e1; margin-bottom: 20px; }
+    .stat {
+      display: flex; justify-content: space-between; gap: 12px; padding: 13px 0;
+      border-bottom: 1px solid rgba(255,255,255,.1); text-align: left;
+    }
+    .prediction {
+      margin-top: 20px; padding: 18px; border-radius: 18px;
+      background: rgba(255,255,255,.08); line-height: 1.45; font-size: 1.08rem;
+    }
+    .again { margin-top: 16px; background: rgba(255,255,255,.12); box-shadow: none; }
+    .tiny { margin-top: 16px; color: #94a3b8; font-size: .82rem; }
+    .confetti {
+      position: fixed; top: -20px; width: 10px; height: 18px; border-radius: 2px;
+      z-index: 5; animation: fall linear forwards;
+    }
+    @keyframes fall { to { transform: translateY(110vh) rotate(760deg); opacity: .9; } }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div id="start">
+      <h1>🍀 Cât de norocos ești azi?</h1>
+      <p class="subtitle">Scrie numele și lasă universul să decidă.</p>
+      <input id="name" type="text" placeholder="Numele tău..." maxlength="24" />
+      <button onclick="testLuck()">TESTEAZĂ-MI NOROCUL ✨</button>
+      <div class="tiny">⚠️ Este doar pentru distracție.</div>
+    </div>
+
+    <section id="result">
+      <h2 id="hello"></h2>
+      <div class="score" id="score">0</div>
+      <div class="label">scor de noroc / 100</div>
+      <div class="stat"><span>💰 Șansa să găsești bani</span><b id="money"></b></div>
+      <div class="stat"><span>❤️ Șansa să te placă crush-ul</span><b id="love"></b></div>
+      <div class="stat"><span>🎮 Șansa să câștigi următorul meci</span><b id="game"></b></div>
+      <div class="stat"><span>📱 Șansa să primești un mesaj interesant</span><b id="message"></b></div>
+      <div class="prediction" id="prediction"></div>
+      <button class="again" onclick="resetTest()">Încearcă din nou 🔁</button>
+    </section>
+  </main>
+
+  <script>
+    const predictions = [
+      "Azi ai șanse mari să se întâmple ceva neașteptat. 👀",
+      "Cineva s-ar putea să-ți scrie exact când nu te aștepți. 📱",
+      "Ai grijă la colțurile de mobilă. Universul e puțin suspect azi. 💀",
+      "O idee bună îți poate veni fix când te plictisești. 💡",
+      "Dacă vezi o monedă pe jos, ia-o. Azi contează. 🪙",
+      "Nu refuza o invitație spontană. S-ar putea să fie cea mai bună parte a zilei. 🎉",
+      "Azi ai energie de personaj principal. 😎",
+      "Nu te certa cu nimeni azi. Ai noroc, dar nu chiar atât de mult. 😂",
+      "Ceva ce credeai că nu merge poate să înceapă brusc să funcționeze. 🔧",
+      "Ziua asta are potențial de screenshot. 📸"
+    ];
+    function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function testLuck() {
+      const name = document.getElementById("name").value.trim() || "Necunoscutule";
+      const score = rand(1, 100);
+      document.getElementById("hello").textContent = `${name}, rezultatul tău este:`;
+      document.getElementById("score").textContent = score;
+      document.getElementById("money").textContent = rand(5, 99) + "%";
+      document.getElementById("love").textContent = rand(5, 99) + "%";
+      document.getElementById("game").textContent = rand(5, 99) + "%";
+      document.getElementById("message").textContent = rand(5, 99) + "%";
+      document.getElementById("prediction").textContent = predictions[rand(0, predictions.length - 1)];
+      document.getElementById("start").style.display = "none";
+      document.getElementById("result").style.display = "block";
+      if (score >= 75) confetti();
+    }
+    function resetTest() {
+      document.getElementById("result").style.display = "none";
+      document.getElementById("start").style.display = "block";
+    }
+    function confetti() {
+      const colors = ["#f472b6","#a78bfa","#facc15","#4ade80","#38bdf8","#fb7185"];
+      for (let i = 0; i < 70; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti";
+        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.background = colors[rand(0, colors.length - 1)];
+        piece.style.animationDuration = (2 + Math.random() * 2) + "s";
+        piece.style.animationDelay = (Math.random() * .5) + "s";
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 4500);
+      }
+    }
+    document.getElementById("name").addEventListener("keydown", e => { if (e.key === "Enter") testLuck(); });
+  </script>
+</body>
+</html>
