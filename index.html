@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLACK TERMINAL</title>
+<title>SpeedCore</title>
 
 <style>
 *{
@@ -13,215 +13,270 @@
 }
 
 :root{
-  --green:#00ff66;
-  --dark:#020402;
-  --panel:#050805;
-  --line:#113018;
-  --red:#ff355d;
+  --bg:#05070c;
+  --card:#0c111b;
+  --line:#1c2635;
+  --cyan:#28e6ff;
+  --purple:#8b5cf6;
+  --green:#00e68a;
+  --text:#f5f7fa;
+  --muted:#718096;
 }
 
 body{
-  background:#020402;
-  color:var(--green);
-  font-family:Consolas, "Courier New", monospace;
   min-height:100vh;
-  overflow:hidden;
-}
-
-canvas{
-  position:fixed;
-  inset:0;
-  z-index:0;
-  opacity:.18;
-}
-
-.overlay{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
   background:
-    repeating-linear-gradient(
-      to bottom,
-      rgba(255,255,255,.02) 0px,
-      rgba(255,255,255,.02) 1px,
-      transparent 1px,
-      transparent 4px
-    );
-  z-index:20;
+    radial-gradient(circle at 20% 10%, rgba(40,230,255,.12), transparent 28%),
+    radial-gradient(circle at 80% 90%, rgba(139,92,246,.12), transparent 28%),
+    var(--bg);
+  color:var(--text);
+  font-family:Arial, sans-serif;
 }
 
-.screen{
-  position:relative;
-  z-index:2;
-  width:min(1100px,95%);
-  height:92vh;
-  margin:4vh auto;
-  border:1px solid #155b2d;
-  background:rgba(0,10,3,.92);
-  box-shadow:
-    0 0 20px rgba(0,255,102,.15),
-    inset 0 0 70px rgba(0,255,102,.03);
+.app{
+  width:min(1100px,94%);
+  margin:auto;
+  padding:28px 0 50px;
 }
 
-.topbar{
-  height:42px;
-  border-bottom:1px solid #14431f;
+nav{
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  padding:0 15px;
-  font-size:12px;
+  align-items:center;
+  padding-bottom:20px;
+  border-bottom:1px solid var(--line);
 }
 
-.brand{
-  font-weight:bold;
-  letter-spacing:2px;
+.logo{
+  font-weight:900;
+  font-size:20px;
+  letter-spacing:1px;
+}
+
+.logo span{
+  color:var(--cyan);
 }
 
 .status{
-  color:#8affaf;
+  color:var(--green);
+  font-size:12px;
 }
 
-.main{
-  height:calc(100% - 42px);
+.hero{
+  text-align:center;
+  padding:60px 0 35px;
+}
+
+.hero h1{
+  font-size:clamp(44px,8vw,84px);
+  letter-spacing:-4px;
+}
+
+.hero h1 span{
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.hero p{
+  color:var(--muted);
+  margin-top:14px;
+}
+
+.dashboard{
   display:grid;
-  grid-template-columns:1.5fr .7fr;
+  grid-template-columns:1.2fr .8fr;
+  gap:18px;
 }
 
-.terminal{
-  padding:20px;
-  border-right:1px solid #10391a;
-  overflow:auto;
-  font-size:14px;
-  line-height:1.6;
+.panel{
+  background:rgba(12,17,27,.85);
+  border:1px solid var(--line);
+  border-radius:26px;
+  padding:28px;
+  box-shadow:0 30px 80px rgba(0,0,0,.25);
 }
 
-.side{
-  padding:18px;
+.speed-panel{
+  min-height:460px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
 }
 
-.box{
-  border:1px solid #12431f;
-  padding:14px;
-  margin-bottom:14px;
-  background:rgba(0,255,100,.025);
+.gauge{
+  width:300px;
+  height:300px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  position:relative;
+  background:
+    conic-gradient(
+      var(--cyan) 0deg,
+      rgba(255,255,255,.06) 0deg
+    );
+  transition:.3s;
 }
 
-.box-title{
-  font-size:11px;
-  color:#70aa7e;
-  margin-bottom:10px;
+.gauge::before{
+  content:"";
+  position:absolute;
+  width:250px;
+  height:250px;
+  border-radius:50%;
+  background:#080d15;
+  border:1px solid #182334;
+}
+
+.gauge-data{
+  position:relative;
+  z-index:2;
+  text-align:center;
+}
+
+.speed{
+  font-size:76px;
+  font-weight:900;
+  letter-spacing:-4px;
+}
+
+.unit{
+  color:var(--muted);
+  margin-top:5px;
+}
+
+.phase{
+  color:var(--cyan);
+  margin-top:22px;
+  font-size:13px;
   letter-spacing:2px;
 }
 
-.big{
-  font-size:34px;
-  font-weight:bold;
+.start{
+  margin-top:26px;
+  width:220px;
+  padding:16px;
+  border:0;
+  border-radius:16px;
+  cursor:pointer;
+  color:#001014;
+  font-weight:900;
+  background:linear-gradient(90deg,var(--cyan),#6fffc4);
+  transition:.2s;
 }
 
-.green{
-  color:var(--green);
+.start:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 35px rgba(40,230,255,.2);
 }
 
-.red{
-  color:var(--red);
+.start:disabled{
+  opacity:.5;
+  cursor:not-allowed;
 }
 
-.bar{
+.metrics{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.metric{
+  padding:20px;
+  border-radius:18px;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.06);
+}
+
+.label{
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:1px;
+}
+
+.value{
+  font-size:32px;
+  font-weight:900;
+  margin-top:7px;
+}
+
+.value small{
+  font-size:14px;
+  color:var(--muted);
+}
+
+.progress-wrap{
+  margin-top:16px;
+}
+
+.progress{
   height:7px;
-  background:#071109;
-  margin-top:8px;
+  border-radius:10px;
+  background:#111a27;
   overflow:hidden;
 }
 
-.fill{
-  width:0;
+.progress-fill{
+  width:0%;
   height:100%;
-  background:var(--green);
-  box-shadow:0 0 10px var(--green);
-  transition:width .8s;
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  transition:.2s;
 }
 
-.line{
-  white-space:pre-wrap;
+.info{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
 }
 
-.dim{
-  color:#477452;
+.info-box{
+  background:rgba(12,17,27,.8);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
 }
 
-.warn{
-  color:#e0ff79;
+.info-box span{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.info-box b{
+  display:block;
+  margin-top:7px;
 }
 
 .error{
-  color:#ff4169;
+  color:#ff6b7d;
+  margin-top:14px;
+  min-height:20px;
+  font-size:13px;
 }
 
-.inputline{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-top:8px;
-}
-
-.inputline span{
-  color:var(--green);
-}
-
-input{
-  flex:1;
-  background:transparent;
-  border:0;
-  outline:0;
-  color:var(--green);
-  font:inherit;
-  caret-color:var(--green);
-}
-
-.cursor{
-  width:8px;
-  height:16px;
-  background:var(--green);
-  display:inline-block;
-  animation:blink .8s infinite;
-}
-
-@keyframes blink{
-  50%{opacity:0}
-}
-
-.glitch{
-  animation:glitch .12s linear 5;
-}
-
-@keyframes glitch{
-  0%{transform:translate(0)}
-  20%{transform:translate(-3px,2px)}
-  40%{transform:translate(4px,-2px)}
-  60%{transform:translate(-2px,-1px)}
-  80%{transform:translate(2px,2px)}
-  100%{transform:translate(0)}
-}
-
-@media(max-width:800px){
-  body{
-    overflow:auto;
-  }
-
-  .screen{
-    height:auto;
-    min-height:95vh;
-  }
-
-  .main{
+@media(max-width:780px){
+  .dashboard{
     grid-template-columns:1fr;
   }
 
-  .terminal{
-    border-right:0;
-    border-bottom:1px solid #10391a;
-    min-height:65vh;
+  .info{
+    grid-template-columns:1fr;
+  }
+
+  .gauge{
+    width:230px;
+    height:230px;
+  }
+
+  .gauge::before{
+    width:190px;
+    height:190px;
+  }
+
+  .speed{
+    font-size:58px;
   }
 }
 </style>
@@ -229,273 +284,361 @@ input{
 
 <body>
 
-<canvas id="matrix"></canvas>
-<div class="overlay"></div>
+<div class="app">
 
-<div class="screen">
-
-  <div class="topbar">
-    <div class="brand">BLACKNODE // TERMINAL</div>
-    <div class="status">SECURE CHANNEL ACTIVE ●</div>
+<nav>
+  <div class="logo">
+    SPEED<span>CORE</span>
   </div>
 
-  <div class="main">
+  <div class="status">
+    ● READY
+  </div>
+</nav>
 
-    <div class="terminal" id="terminal">
+<section class="hero">
+  <h1>Internet <span>Speed Test</span></h1>
+  <p>Testează ping-ul, download-ul și upload-ul conexiunii tale.</p>
+</section>
 
-      <div class="line">BLACKNODE SYSTEM v7.31</div>
-      <div class="line dim">Type <b>help</b> to list commands.</div>
-      <br>
+<div class="dashboard">
 
-      <div id="history"></div>
+  <div class="panel speed-panel">
 
-      <div class="inputline">
-        <span>root@blacknode:~$</span>
-        <input id="cmd" autofocus autocomplete="off">
+    <div class="gauge" id="gauge">
+      <div class="gauge-data">
+        <div class="speed" id="speed">0</div>
+        <div class="unit" id="unit">Mbps</div>
+      </div>
+    </div>
+
+    <div class="phase" id="phase">
+      READY
+    </div>
+
+    <button class="start" id="startBtn" onclick="runTest()">
+      START TEST
+    </button>
+
+    <div class="error" id="error"></div>
+
+  </div>
+
+  <div class="panel">
+
+    <div class="metrics">
+
+      <div class="metric">
+        <div class="label">PING</div>
+        <div class="value">
+          <span id="ping">--</span>
+          <small>ms</small>
+        </div>
+      </div>
+
+      <div class="metric">
+        <div class="label">DOWNLOAD</div>
+        <div class="value">
+          <span id="download">--</span>
+          <small>Mbps</small>
+        </div>
+      </div>
+
+      <div class="metric">
+        <div class="label">UPLOAD</div>
+        <div class="value">
+          <span id="upload">--</span>
+          <small>Mbps</small>
+        </div>
+      </div>
+
+      <div class="metric">
+        <div class="label">PROGRESS</div>
+
+        <div class="progress-wrap">
+          <div class="progress">
+            <div class="progress-fill" id="progress"></div>
+          </div>
+        </div>
       </div>
 
     </div>
 
-    <div class="side">
+  </div>
 
-      <div class="box">
-        <div class="box-title">SYSTEM STATUS</div>
-        <div class="big">ONLINE</div>
-      </div>
+  <div class="info">
 
-      <div class="box">
-        <div class="box-title">CPU LOAD</div>
-        <div id="cpuVal">12%</div>
-        <div class="bar"><div class="fill" id="cpuBar"></div></div>
-      </div>
+    <div class="info-box">
+      <span>SERVER</span>
+      <b>Cloudflare Network</b>
+    </div>
 
-      <div class="box">
-        <div class="box-title">NETWORK ACTIVITY</div>
-        <div id="netVal">0 MB/s</div>
-        <div class="bar"><div class="fill" id="netBar"></div></div>
-      </div>
+    <div class="info-box">
+      <span>TEST MODE</span>
+      <b>Browser HTTP</b>
+    </div>
 
-      <div class="box">
-        <div class="box-title">ACTIVE NODES</div>
-        <div class="big" id="nodes">4</div>
-      </div>
-
-      <div class="box">
-        <div class="box-title">ACCESS LEVEL</div>
-        <div class="green">ROOT / LEVEL 7</div>
-      </div>
-
+    <div class="info-box">
+      <span>STATUS</span>
+      <b id="statusText">Waiting</b>
     </div>
 
   </div>
 
 </div>
 
+</div>
+
 <script>
-const terminal = document.getElementById("terminal");
-const history = document.getElementById("history");
-const cmd = document.getElementById("cmd");
 
-const fakeIPs = [
-  "10.24.88.12",
-  "172.19.4.77",
-  "192.168.1.22",
-  "10.77.13.9",
-  "172.24.91.10"
-];
+const CF = "https://speed.cloudflare.com";
 
-function addLine(text, cls=""){
-  const div = document.createElement("div");
-  div.className = "line " + cls;
-  div.textContent = text;
-  history.appendChild(div);
-  terminal.scrollTop = terminal.scrollHeight;
+const speedEl = document.getElementById("speed");
+const phaseEl = document.getElementById("phase");
+const gauge = document.getElementById("gauge");
+const progress = document.getElementById("progress");
+const errorEl = document.getElementById("error");
+const startBtn = document.getElementById("startBtn");
+const statusText = document.getElementById("statusText");
+
+function setPhase(text, percent){
+  phaseEl.textContent = text;
+  progress.style.width = percent + "%";
+  statusText.textContent = text;
 }
 
-function wait(ms){
-  return new Promise(r => setTimeout(r, ms));
+function updateGauge(value, max = 500){
+
+  let safe = Math.min(value, max);
+  let deg = (safe / max) * 360;
+
+  gauge.style.background =
+    `conic-gradient(
+      #28e6ff 0deg,
+      #8b5cf6 ${deg}deg,
+      rgba(255,255,255,.06) ${deg}deg
+    )`;
+
+  speedEl.textContent =
+    value < 10
+      ? value.toFixed(1)
+      : Math.round(value);
 }
 
-async function fakeScan(){
-  addLine("[+] Initializing network scan...");
-  await wait(350);
+async function testPing(){
 
-  for(let i=0;i<5;i++){
-    addLine(
-      `[+] Node discovered: ${fakeIPs[i]}  PORT:${Math.floor(Math.random()*8000+1000)}`
-    );
-    await wait(260);
-  }
+  setPhase("TESTING PING", 15);
 
-  addLine("[+] Scan complete.", "green");
-}
+  let results = [];
 
-async function breach(){
-  addLine("[*] Establishing encrypted tunnel...");
-  await wait(500);
-  addLine("[*] Bypassing firewall layer 1...");
-  await wait(500);
-  addLine("[*] Bypassing firewall layer 2...");
-  await wait(500);
-  addLine("[!] IDS activity detected.", "warn");
-  await wait(650);
-  addLine("[+] ACCESS GRANTED", "green");
+  for(let i = 0; i < 5; i++){
 
-  document.querySelector(".screen").classList.add("glitch");
+    const start = performance.now();
 
-  setTimeout(()=>{
-    document.querySelector(".screen").classList.remove("glitch");
-  },700);
-}
-
-async function decrypt(){
-  addLine("[*] Loading encrypted block...");
-  await wait(300);
-
-  for(let i=0;i<8;i++){
-    addLine(
-      Math.random().toString(16).substring(2,22).toUpperCase(),
-      "dim"
-    );
-    await wait(90);
-  }
-
-  addLine("[+] Decryption complete.", "green");
-}
-
-function clearTerminal(){
-  history.innerHTML = "";
-}
-
-function showHelp(){
-  addLine("Available commands:");
-  addLine(" help       - show commands");
-  addLine(" scan       - simulate network scan");
-  addLine(" breach     - simulate access sequence");
-  addLine(" decrypt    - simulate decryption");
-  addLine(" status     - system status");
-  addLine(" whoami     - current user");
-  addLine(" clear      - clear terminal");
-}
-
-cmd.addEventListener("keydown", async (e)=>{
-  if(e.key !== "Enter") return;
-
-  const command = cmd.value.trim().toLowerCase();
-
-  addLine("root@blacknode:~$ " + command);
-  cmd.value = "";
-
-  if(command === "help"){
-    showHelp();
-  }
-
-  else if(command === "scan"){
-    await fakeScan();
-  }
-
-  else if(command === "breach"){
-    await breach();
-  }
-
-  else if(command === "decrypt"){
-    await decrypt();
-  }
-
-  else if(command === "status"){
-    addLine("SYSTEM: ONLINE");
-    addLine("FIREWALL: ACTIVE");
-    addLine("TUNNEL: ENCRYPTED");
-    addLine("TRACE STATUS: 0%");
-  }
-
-  else if(command === "whoami"){
-    addLine("root");
-  }
-
-  else if(command === "clear"){
-    clearTerminal();
-  }
-
-  else if(command === ""){
-    return;
-  }
-
-  else{
-    addLine(`command not found: ${command}`, "error");
-  }
-});
-
-/* fake live stats */
-
-setInterval(()=>{
-
-  const cpu = Math.floor(Math.random()*75)+10;
-  const net = (Math.random()*40).toFixed(1);
-  const nodes = Math.floor(Math.random()*8)+2;
-
-  document.getElementById("cpuVal").textContent = cpu+"%";
-  document.getElementById("cpuBar").style.width = cpu+"%";
-
-  document.getElementById("netVal").textContent = net+" MB/s";
-  document.getElementById("netBar").style.width =
-    Math.min(net*2,100)+"%";
-
-  document.getElementById("nodes").textContent = nodes;
-
-},1200);
-
-/* matrix background */
-
-const canvas = document.getElementById("matrix");
-const ctx = canvas.getContext("2d");
-
-function resize(){
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-
-resize();
-window.addEventListener("resize",resize);
-
-const letters =
-  "01ABCDEF$#@<>/\\[]{}SYSTEMROOTACCESSNODE";
-
-const fontSize = 14;
-let columns = Math.floor(canvas.width/fontSize);
-let drops = Array(columns).fill(1);
-
-function matrix(){
-
-  ctx.fillStyle="rgba(0,4,1,.08)";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  ctx.fillStyle="#00ff66";
-  ctx.font=fontSize+"px monospace";
-
-  for(let i=0;i<drops.length;i++){
-
-    const text =
-      letters[Math.floor(Math.random()*letters.length)];
-
-    ctx.fillText(
-      text,
-      i*fontSize,
-      drops[i]*fontSize
+    await fetch(
+      `${CF}/__down?bytes=0&r=${Math.random()}`,
+      {
+        cache:"no-store"
+      }
     );
 
-    if(
-      drops[i]*fontSize > canvas.height &&
-      Math.random()>.975
-    ){
-      drops[i]=0;
+    const end = performance.now();
+
+    results.push(end - start);
+
+  }
+
+  results.sort((a,b)=>a-b);
+
+  return results[Math.floor(results.length/2)];
+}
+
+async function testDownload(){
+
+  setPhase("TESTING DOWNLOAD", 35);
+
+  /*
+    25 MB.
+    Poți pune:
+    10000000 = 10 MB
+    25000000 = 25 MB
+    50000000 = 50 MB
+  */
+
+  const bytes = 25000000;
+
+  const start = performance.now();
+
+  const response = await fetch(
+    `${CF}/__down?bytes=${bytes}&r=${Math.random()}`,
+    {
+      cache:"no-store"
     }
+  );
 
-    drops[i]++;
+  if(!response.ok){
+    throw new Error("Download test failed");
   }
+
+  const reader = response.body.getReader();
+
+  let received = 0;
+
+  while(true){
+
+    const {done,value} = await reader.read();
+
+    if(done) break;
+
+    received += value.length;
+
+    const elapsed =
+      (performance.now() - start) / 1000;
+
+    const mbps =
+      (received * 8) /
+      elapsed /
+      1_000_000;
+
+    updateGauge(mbps,500);
+
+  }
+
+  const seconds =
+    (performance.now() - start) / 1000;
+
+  return (
+    received * 8 /
+    seconds /
+    1_000_000
+  );
 }
 
-setInterval(matrix,40);
+async function testUpload(){
+
+  setPhase("TESTING UPLOAD", 70);
+
+  const size = 8_000_000;
+
+  const data =
+    new Uint8Array(size);
+
+  crypto.getRandomValues(
+    data.subarray(0,65536)
+  );
+
+  /*
+    Restul poate rămâne zero.
+    Pentru speed test contează cantitatea de bytes transmisă.
+  */
+
+  const start = performance.now();
+
+  const response = await fetch(
+    `${CF}/__up`,
+    {
+      method:"POST",
+      body:data,
+      cache:"no-store"
+    }
+  );
+
+  if(!response.ok){
+    throw new Error("Upload test failed");
+  }
+
+  const seconds =
+    (performance.now() - start) / 1000;
+
+  const mbps =
+    (size * 8) /
+    seconds /
+    1_000_000;
+
+  updateGauge(mbps,500);
+
+  return mbps;
+}
+
+async function runTest(){
+
+  errorEl.textContent = "";
+
+  startBtn.disabled = true;
+
+  document.getElementById("ping").textContent = "--";
+  document.getElementById("download").textContent = "--";
+  document.getElementById("upload").textContent = "--";
+
+  updateGauge(0);
+
+  try{
+
+    /*
+      PING
+    */
+
+    const ping = await testPing();
+
+    document.getElementById("ping").textContent =
+      Math.round(ping);
+
+    /*
+      DOWNLOAD
+    */
+
+    setPhase("TESTING DOWNLOAD", 40);
+
+    const download =
+      await testDownload();
+
+    document.getElementById("download").textContent =
+      download.toFixed(1);
+
+    /*
+      UPLOAD
+    */
+
+    setPhase("TESTING UPLOAD", 75);
+
+    const upload =
+      await testUpload();
+
+    document.getElementById("upload").textContent =
+      upload.toFixed(1);
+
+    /*
+      COMPLETE
+    */
+
+    setPhase("TEST COMPLETE", 100);
+
+    updateGauge(download,500);
+
+    statusText.textContent = "Completed";
+
+  }
+
+  catch(err){
+
+    console.error(err);
+
+    errorEl.textContent =
+      "Testul nu a putut fi finalizat. Încearcă din nou.";
+
+    setPhase("ERROR",0);
+
+  }
+
+  finally{
+
+    startBtn.disabled = false;
+    startBtn.textContent = "TEST AGAIN";
+
+  }
+
+}
+
 </script>
 
 </body>
