@@ -1,117 +1,108 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>LUCK // PROTOCOL</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LUCKCORE // BLACKSITE</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
 :root{
   --bg:#020304;
-  --panel:rgba(5,12,14,.82);
-  --green:#00ff9d;
-  --cyan:#00eaff;
-  --red:#ff315c;
-  --muted:#607079;
+  --panel:#05080b;
+  --line:#152027;
+  --green:#00ff9c;
+  --cyan:#00e5ff;
+  --red:#ff365f;
+  --text:#e8f1f4;
+  --muted:#5f727a;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html{
+  scroll-behavior:smooth;
 }
 
 body{
   min-height:100vh;
-  font-family:"Courier New",monospace;
-  background:#020304;
-  color:white;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(0,255,156,.09), transparent 24%),
+    radial-gradient(circle at 90% 85%, rgba(0,229,255,.07), transparent 24%),
+    #020304;
+  color:var(--text);
+  font-family:Consolas, "Courier New", monospace;
   overflow-x:hidden;
 }
 
-/* GRID BACKGROUND */
+/* scanlines */
 
 body::before{
   content:"";
   position:fixed;
   inset:0;
-  background:
-    linear-gradient(rgba(0,255,157,.035) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,255,157,.035) 1px,transparent 1px);
-  background-size:35px 35px;
   pointer-events:none;
-  mask-image:linear-gradient(to bottom,black,transparent 95%);
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,.018) 0px,
+      rgba(255,255,255,.018) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+  z-index:100;
 }
 
-/* NOISE */
+/* grid */
 
 body::after{
   content:"";
   position:fixed;
   inset:0;
   pointer-events:none;
-  opacity:.07;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+  background:
+    linear-gradient(rgba(0,255,156,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,156,.025) 1px, transparent 1px);
+  background-size:44px 44px;
+  mask-image:linear-gradient(to bottom, black 40%, transparent);
 }
 
-/* GLOW */
+/* layout */
 
-.glow{
-  position:fixed;
-  width:500px;
-  height:500px;
-  border-radius:50%;
-  filter:blur(140px);
-  opacity:.13;
-  pointer-events:none;
-}
-
-.g1{
-  background:var(--green);
-  top:-180px;
-  left:-150px;
-}
-
-.g2{
-  background:var(--cyan);
-  right:-180px;
-  bottom:-180px;
-}
-
-/* APP */
-
-.app{
-  width:min(1100px,94%);
+.shell{
+  width:min(1180px,94%);
   margin:auto;
-  padding:28px 0 50px;
+  padding:20px 0 55px;
   position:relative;
   z-index:2;
 }
 
-/* TOP */
-
-nav{
+.topbar{
+  height:58px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  border-bottom:1px solid rgba(0,255,157,.15);
-  padding:13px 0 20px;
+  border-bottom:1px solid var(--line);
 }
 
-.logo{
+.brand{
   color:var(--green);
-  font-size:18px;
-  font-weight:bold;
+  font-weight:900;
   letter-spacing:4px;
 }
 
-.system{
-  font-size:12px;
+.live{
   color:var(--green);
+  font-size:11px;
+  letter-spacing:2px;
 }
 
-.blink{
+.live::before{
+  content:"●";
+  margin-right:8px;
   animation:blink .8s infinite;
 }
 
@@ -119,384 +110,488 @@ nav{
   50%{opacity:.15}
 }
 
-/* HERO */
+/* intro */
 
 .hero{
-  min-height:75vh;
-  display:flex;
+  min-height:calc(100vh - 78px);
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
   align-items:center;
-  justify-content:center;
-  text-align:center;
+  gap:40px;
 }
 
-.hero-inner{
-  width:min(800px,100%);
-}
-
-.code{
+.tag{
   color:var(--green);
-  letter-spacing:2px;
-  font-size:12px;
-  margin-bottom:18px;
+  font-size:11px;
+  letter-spacing:3px;
+  margin-bottom:20px;
 }
 
 h1{
-  font-family:Arial Black,Arial,sans-serif;
-  font-size:clamp(50px,10vw,110px);
-  line-height:.82;
-  letter-spacing:-6px;
-  margin-bottom:26px;
+  font-family:Arial Black, Arial, sans-serif;
+  font-size:clamp(58px,10vw,125px);
+  line-height:.78;
+  letter-spacing:-8px;
+  text-transform:uppercase;
 }
 
-.stroke{
+.hollow{
   color:transparent;
-  -webkit-text-stroke:1px rgba(255,255,255,.7);
+  -webkit-text-stroke:1px #8d9ca2;
 }
 
-.green{
+.hot{
   color:var(--green);
-  text-shadow:0 0 35px rgba(0,255,157,.4);
+  text-shadow:0 0 40px rgba(0,255,156,.35);
 }
 
 .desc{
-  max-width:600px;
-  margin:auto;
-  color:#829197;
+  max-width:620px;
+  color:#73868e;
+  margin-top:30px;
   line-height:1.7;
   font-size:14px;
 }
 
-/* FORM */
+/* command box */
 
-.input-box{
-  margin:35px auto 0;
-  max-width:620px;
+.command{
   display:flex;
-  border:1px solid rgba(0,255,157,.35);
-  background:rgba(0,0,0,.55);
+  margin-top:36px;
+  border:1px solid rgba(0,255,156,.35);
+  background:#020607;
   position:relative;
 }
 
-.input-box::before,
-.input-box::after{
+.command::before{
   content:"";
   position:absolute;
-  width:15px;
-  height:15px;
-}
-
-.input-box::before{
   left:-1px;
   top:-1px;
+  width:17px;
+  height:17px;
   border-left:2px solid var(--green);
   border-top:2px solid var(--green);
 }
 
-.input-box::after{
+.command::after{
+  content:"";
+  position:absolute;
   right:-1px;
   bottom:-1px;
+  width:17px;
+  height:17px;
   border-right:2px solid var(--green);
   border-bottom:2px solid var(--green);
 }
 
 input{
-  width:100%;
+  flex:1;
+  min-width:0;
   background:transparent;
   border:0;
   outline:0;
   color:white;
-  font-family:inherit;
-  font-size:16px;
   padding:20px;
+  font:inherit;
+  font-size:15px;
 }
 
 input::placeholder{
-  color:#435058;
+  color:#3f5057;
 }
 
 button{
-  border:0;
-  cursor:pointer;
-  font-family:inherit;
+  font:inherit;
 }
 
-.scan-btn{
-  min-width:170px;
+.execute{
+  min-width:190px;
+  border:0;
+  cursor:pointer;
   background:var(--green);
-  color:#001009;
+  color:#00110a;
   font-weight:900;
-  letter-spacing:1px;
-  clip-path:polygon(0 0,100% 0,100% 75%,88% 100%,0 100%);
+  clip-path:polygon(0 0,100% 0,100% 74%,87% 100%,0 100%);
   transition:.2s;
 }
 
-.scan-btn:hover{
-  box-shadow:0 0 40px rgba(0,255,157,.5);
+.execute:hover{
+  box-shadow:0 0 45px rgba(0,255,156,.4);
   filter:brightness(1.15);
 }
 
-/* SCANNING SCREEN */
+/* side reactor */
 
-#scanner{
+.reactor-wrap{
+  display:grid;
+  place-items:center;
+}
+
+.reactor{
+  width:360px;
+  height:360px;
+  position:relative;
+  display:grid;
+  place-items:center;
+}
+
+.ring{
+  position:absolute;
+  border-radius:50%;
+  border:1px solid rgba(0,255,156,.2);
+}
+
+.r1{
+  width:100%;
+  height:100%;
+  animation:spin 12s linear infinite;
+  border-top-color:var(--green);
+  border-bottom-color:var(--cyan);
+}
+
+.r2{
+  width:78%;
+  height:78%;
+  animation:spinReverse 8s linear infinite;
+  border-right-color:var(--green);
+}
+
+.r3{
+  width:52%;
+  height:52%;
+  animation:pulse 1.8s ease-in-out infinite;
+  box-shadow:0 0 45px rgba(0,255,156,.08);
+}
+
+.core{
+  width:92px;
+  height:92px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle, #b8ffe2 0%, var(--green) 15%, #073e2b 45%, #020304 75%);
+  box-shadow:
+    0 0 35px var(--green),
+    0 0 100px rgba(0,255,156,.25);
+  animation:corePulse 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+@keyframes spinReverse{
+  to{transform:rotate(-360deg)}
+}
+
+@keyframes pulse{
+  50%{transform:scale(1.08); opacity:.4}
+}
+
+@keyframes corePulse{
+  to{transform:scale(1.12)}
+}
+
+/* loading */
+
+#loading{
   display:none;
-  min-height:75vh;
+  min-height:78vh;
   align-items:center;
   justify-content:center;
 }
 
-.scan-window{
-  width:min(800px,100%);
-  border:1px solid rgba(0,255,157,.25);
-  background:rgba(1,6,7,.8);
-  padding:35px;
+.loader-box{
+  width:min(900px,100%);
+  background:rgba(2,7,8,.94);
+  border:1px solid rgba(0,255,156,.25);
+  padding:32px;
   position:relative;
   overflow:hidden;
 }
 
-.scan-line{
+.loader-box::after{
+  content:"";
   position:absolute;
   left:0;
   width:100%;
   height:2px;
   background:var(--green);
   box-shadow:0 0 25px var(--green);
-  animation:scanLine 1.6s linear infinite;
+  animation:verticalScan 1.5s linear infinite;
 }
 
-@keyframes scanLine{
+@keyframes verticalScan{
   from{top:0}
   to{top:100%}
 }
 
-.terminal-title{
+.loader-title{
   color:var(--green);
-  font-size:13px;
-  margin-bottom:25px;
+  letter-spacing:3px;
+  font-size:12px;
+  margin-bottom:24px;
 }
 
 .terminal{
-  height:230px;
-  color:#8fffd0;
-  font-size:13px;
-  line-height:1.8;
+  height:300px;
   overflow:hidden;
+  color:#83ffc9;
+  font-size:13px;
+  line-height:1.9;
 }
 
-.progress-shell{
-  height:15px;
-  border:1px solid rgba(0,255,157,.35);
-  margin-top:25px;
-  padding:3px;
+.line-muted{
+  color:#456258;
+}
+
+.line-danger{
+  color:var(--red);
+}
+
+.progress-frame{
+  margin-top:24px;
+  height:18px;
+  border:1px solid #194832;
+  padding:4px;
 }
 
 .progress{
-  width:0%;
   height:100%;
-  background:var(--green);
-  box-shadow:0 0 20px rgba(0,255,157,.7);
+  width:0;
+  background:linear-gradient(90deg,var(--green),var(--cyan));
+  box-shadow:0 0 18px rgba(0,255,156,.5);
+  transition:.18s linear;
 }
 
-/* RESULT */
+/* result */
 
 #result{
   display:none;
-  padding-top:55px;
+  padding-top:45px;
 }
 
-.result-header{
+.result-head{
   display:flex;
   justify-content:space-between;
-  align-items:flex-end;
-  margin-bottom:25px;
+  align-items:end;
+  border-bottom:1px solid var(--line);
+  padding-bottom:22px;
+  margin-bottom:22px;
 }
 
-.result-label{
+.small{
   color:var(--green);
-  font-size:12px;
+  font-size:11px;
   letter-spacing:3px;
+  margin-bottom:8px;
 }
 
-.result-name{
-  font-size:clamp(32px,6vw,70px);
-  letter-spacing:-3px;
+.name{
   font-family:Arial Black,Arial,sans-serif;
+  font-size:clamp(40px,7vw,85px);
+  letter-spacing:-5px;
+  text-transform:uppercase;
 }
 
-.risk{
+.clearance{
+  border:1px solid rgba(0,255,156,.32);
   color:var(--green);
-  border:1px solid rgba(0,255,157,.3);
-  padding:10px 15px;
-  font-size:12px;
+  padding:11px 14px;
+  font-size:11px;
 }
 
 .dashboard{
   display:grid;
-  grid-template-columns:1.1fr 1fr;
-  gap:18px;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
 }
 
 .panel{
-  background:var(--panel);
-  border:1px solid rgba(255,255,255,.08);
+  background:linear-gradient(180deg,rgba(7,13,16,.93),rgba(3,6,8,.93));
+  border:1px solid var(--line);
+  padding:24px;
   position:relative;
-  padding:25px;
 }
 
 .panel::before{
   content:"";
   position:absolute;
-  width:18px;
-  height:18px;
   left:-1px;
   top:-1px;
-  border-left:2px solid var(--green);
+  width:16px;
+  height:16px;
   border-top:2px solid var(--green);
+  border-left:2px solid var(--green);
 }
 
 .score-panel{
-  min-height:440px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
+  min-height:470px;
+  display:grid;
+  place-items:center;
+}
+
+.score-wrap{
+  position:relative;
+  width:310px;
+  height:310px;
+  display:grid;
+  place-items:center;
 }
 
 .score-ring{
-  width:270px;
-  height:270px;
+  position:absolute;
+  inset:0;
   border-radius:50%;
-  display:grid;
-  place-items:center;
-  position:relative;
-  background:conic-gradient(
-    var(--green) 0deg,
-    rgba(255,255,255,.05) 0deg
-  );
-  box-shadow:
-    0 0 60px rgba(0,255,157,.12),
-    inset 0 0 50px rgba(0,0,0,.9);
+  background:
+    conic-gradient(
+      var(--green) 0deg,
+      rgba(255,255,255,.04) 0deg
+    );
+  filter:drop-shadow(0 0 18px rgba(0,255,156,.18));
 }
 
 .score-ring::before{
   content:"";
   position:absolute;
-  width:235px;
-  height:235px;
+  inset:19px;
   border-radius:50%;
-  background:#030809;
-  border:1px solid rgba(0,255,157,.15);
+  background:#030708;
+  border:1px solid #173028;
+}
+
+.orbit{
+  position:absolute;
+  inset:38px;
+  border-radius:50%;
+  border:1px dashed rgba(0,229,255,.28);
+  animation:spin 12s linear infinite;
 }
 
 .score-data{
+  position:relative;
   z-index:2;
   text-align:center;
 }
 
 .score{
   font-family:Arial Black,Arial,sans-serif;
-  font-size:80px;
-  letter-spacing:-6px;
+  font-size:96px;
+  letter-spacing:-8px;
 }
 
-.score-small{
+.score-label{
   color:var(--green);
   font-size:11px;
-  letter-spacing:4px;
+  letter-spacing:5px;
 }
 
-.analysis-title{
-  color:#79888f;
+.section-title{
+  color:#71848b;
   font-size:11px;
-  letter-spacing:2px;
-  margin-bottom:20px;
+  letter-spacing:3px;
+  margin-bottom:22px;
 }
 
-.stat{
-  margin-bottom:27px;
+.metric{
+  margin-bottom:26px;
 }
 
-.stat-head{
+.metric-top{
   display:flex;
   justify-content:space-between;
   font-size:13px;
-  margin-bottom:10px;
+  margin-bottom:9px;
 }
 
-.stat-number{
+.metric-value{
   color:var(--green);
 }
 
 .bar{
-  height:5px;
-  background:#10191c;
+  height:6px;
+  background:#0b1518;
   overflow:hidden;
 }
 
-.bar-fill{
-  width:0%;
+.fill{
   height:100%;
+  width:0;
   background:linear-gradient(90deg,var(--green),var(--cyan));
-  box-shadow:0 0 12px rgba(0,255,157,.5);
-  transition:width 1.5s cubic-bezier(.16,1,.3,1);
+  box-shadow:0 0 14px rgba(0,255,156,.35);
+  transition:1.4s cubic-bezier(.16,1,.3,1);
 }
-
-/* PREDICTION */
 
 .prediction{
   grid-column:1/-1;
-  padding:25px;
+  background:
+    linear-gradient(90deg,rgba(0,255,156,.06),rgba(0,229,255,.025));
   border-left:3px solid var(--green);
-  background:linear-gradient(
-    90deg,
-    rgba(0,255,157,.07),
-    rgba(0,234,255,.025)
-  );
+  padding:24px;
 }
 
-.prediction-label{
-  color:var(--green);
-  font-size:11px;
-  letter-spacing:3px;
-  margin-bottom:12px;
-}
-
-.prediction-text{
+.prediction p{
   font-size:17px;
-  line-height:1.6;
+  line-height:1.7;
 }
 
-/* BUTTON */
+.meta-grid{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
 
-.restart{
-  margin-top:20px;
+.meta{
+  background:#04080a;
+  border:1px solid var(--line);
+  padding:15px;
+}
+
+.meta-label{
+  color:#53676e;
+  font-size:10px;
+  letter-spacing:2px;
+  margin-bottom:7px;
+}
+
+.meta-value{
+  color:var(--cyan);
+  font-size:13px;
+}
+
+.reset{
+  margin-top:16px;
   width:100%;
   padding:18px;
-  background:transparent;
+  background:#030708;
   color:white;
-  border:1px solid rgba(255,255,255,.13);
+  border:1px solid #19282e;
+  cursor:pointer;
   transition:.2s;
 }
 
-.restart:hover{
+.reset:hover{
   color:var(--green);
   border-color:var(--green);
 }
 
-/* GLITCH */
+/* glitch */
 
 .glitch{
-  animation:glitch .16s linear 3;
+  animation:glitch .12s linear 5;
 }
 
 @keyframes glitch{
-  0%{transform:translate(0)}
-  25%{transform:translate(-5px,2px)}
-  50%{transform:translate(6px,-2px)}
-  75%{transform:translate(-3px,-1px)}
+  0%{transform:translate(0);filter:none}
+  20%{transform:translate(-5px,2px);filter:hue-rotate(40deg)}
+  40%{transform:translate(6px,-2px)}
+  60%{transform:translate(-2px,4px);filter:hue-rotate(-50deg)}
+  80%{transform:translate(3px,-3px)}
   100%{transform:translate(0)}
 }
 
-/* PARTICLES */
+/* floating particles */
 
 .particle{
   position:fixed;
@@ -505,613 +600,531 @@ button{
   background:var(--green);
   opacity:.5;
   pointer-events:none;
-  animation:particleMove linear infinite;
+  animation:rise linear infinite;
 }
 
-@keyframes particleMove{
-  from{
-    transform:translateY(100vh);
-  }
-  to{
-    transform:translateY(-20px);
-  }
+@keyframes rise{
+  from{transform:translateY(105vh)}
+  to{transform:translateY(-5vh)}
 }
 
-/* MOBILE */
+@media(max-width:850px){
+  .hero{
+    grid-template-columns:1fr;
+    padding:70px 0;
+  }
 
-@media(max-width:750px){
+  .reactor-wrap{
+    order:-1;
+  }
+
+  .reactor{
+    width:230px;
+    height:230px;
+  }
 
   h1{
-    letter-spacing:-3px;
+    letter-spacing:-4px;
   }
 
   .dashboard{
     grid-template-columns:1fr;
   }
 
-  .prediction{
+  .prediction,
+  .meta-grid{
     grid-column:1;
   }
 
-  .result-header{
+  .meta-grid{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media(max-width:560px){
+  .command{
     display:block;
   }
 
-  .risk{
-    margin-top:15px;
-    display:inline-block;
-  }
-
-  .input-box{
-    display:block;
-  }
-
-  .scan-btn{
+  .execute{
     width:100%;
     padding:18px;
   }
 
-  .score-ring{
-    width:220px;
-    height:220px;
+  .result-head{
+    display:block;
   }
 
-  .score-ring::before{
-    width:190px;
-    height:190px;
+  .clearance{
+    display:inline-block;
+    margin-top:12px;
+  }
+
+  .score-wrap{
+    width:230px;
+    height:230px;
   }
 
   .score{
-    font-size:65px;
+    font-size:70px;
+  }
+
+  .meta-grid{
+    grid-template-columns:1fr;
   }
 }
-
 </style>
 </head>
 
 <body>
 
-<div class="glow g1"></div>
-<div class="glow g2"></div>
+<div class="shell">
 
-<div class="app">
-
-<nav>
-
-  <div class="logo">
-    LUCK//PROTOCOL
+  <div class="topbar">
+    <div class="brand">LUCKCORE://BLACKSITE</div>
+    <div class="live">NODE ACTIVE</div>
   </div>
 
-  <div class="system">
-    SYSTEM ONLINE <span class="blink">■</span>
-  </div>
+  <!-- HERO -->
 
-</nav>
-
-<!-- HOME -->
-
-<section class="hero" id="home">
-
-  <div class="hero-inner">
-
-    <div class="code">
-      [ SYSTEM ACCESS GRANTED ]
-    </div>
-
-    <h1>
-      <span class="stroke">CHECK YOUR</span><br>
-      <span class="green">LUCK.</span>
-    </h1>
-
-    <p class="desc">
-      Protocol experimental pentru analiza nivelului tău de noroc.
-      Introdu identificatorul și pornește scanarea.
-    </p>
-
-    <div class="input-box">
-
-      <input
-        id="username"
-        type="text"
-        maxlength="22"
-        placeholder="ENTER_IDENTITY..."
-      >
-
-      <button class="scan-btn" onclick="startScan()">
-        EXECUTE
-      </button>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- SCANNER -->
-
-<section id="scanner">
-
-  <div class="scan-window">
-
-    <div class="scan-line"></div>
-
-    <div class="terminal-title">
-      > LUCK_ANALYSIS_ENGINE v4.8
-    </div>
-
-    <div class="terminal" id="terminal"></div>
-
-    <div class="progress-shell">
-      <div class="progress" id="progress"></div>
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- RESULT -->
-
-<section id="result">
-
-  <div class="result-header">
+  <section class="hero" id="hero">
 
     <div>
+      <div class="tag">[ RESTRICTED SYSTEM // LEVEL 07 ]</div>
 
-      <div class="result-label">
-        SCAN COMPLETE //
+      <h1>
+        <span class="hollow">LUCK</span><br>
+        <span class="hot">CORE</span>
+      </h1>
+
+      <p class="desc">
+        Experimental probability engine. Identity fingerprinting, entropy mapping
+        și random-event prediction într-o singură interfață.
+      </p>
+
+      <div class="command">
+        <input id="username" maxlength="24" placeholder="ENTER SUBJECT ID..." />
+        <button class="execute" onclick="boot()">INITIATE_SCAN</button>
+      </div>
+    </div>
+
+    <div class="reactor-wrap">
+      <div class="reactor">
+        <div class="ring r1"></div>
+        <div class="ring r2"></div>
+        <div class="ring r3"></div>
+        <div class="core"></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- LOADING -->
+
+  <section id="loading">
+
+    <div class="loader-box">
+
+      <div class="loader-title">
+        > BLACKSITE ANALYSIS ENGINE
       </div>
 
-      <div class="result-name" id="resultName">
-        UNKNOWN
+      <div class="terminal" id="terminal"></div>
+
+      <div class="progress-frame">
+        <div class="progress" id="progress"></div>
       </div>
 
     </div>
 
-    <div class="risk" id="classification">
-      CLASSIFICATION: UNKNOWN
+  </section>
+
+  <!-- RESULT -->
+
+  <section id="result">
+
+    <div class="result-head">
+
+      <div>
+        <div class="small">// SUBJECT ANALYSIS COMPLETE</div>
+        <div class="name" id="subjectName">UNKNOWN</div>
+      </div>
+
+      <div class="clearance" id="classification">
+        CLASS: UNKNOWN
+      </div>
+
     </div>
 
-  </div>
+    <div class="dashboard">
 
+      <div class="panel score-panel">
 
-  <div class="dashboard">
+        <div class="score-wrap">
 
+          <div class="score-ring" id="scoreRing"></div>
+          <div class="orbit"></div>
 
-    <div class="panel score-panel">
-
-      <div class="score-ring" id="scoreRing">
-
-        <div class="score-data">
-
-          <div class="score" id="score">
-            00
+          <div class="score-data">
+            <div class="score" id="score">00</div>
+            <div class="score-label">CORE INDEX</div>
           </div>
 
-          <div class="score-small">
-            LUCK INDEX
+        </div>
+
+      </div>
+
+      <div class="panel">
+
+        <div class="section-title">// PROBABILITY CHANNELS</div>
+
+        <div class="metric">
+          <div class="metric-top">
+            <span>FINANCIAL VECTOR</span>
+            <span class="metric-value" id="moneyValue">0%</span>
           </div>
+          <div class="bar">
+            <div class="fill" id="moneyBar"></div>
+          </div>
+        </div>
 
+        <div class="metric">
+          <div class="metric-top">
+            <span>RELATIONSHIP SIGNAL</span>
+            <span class="metric-value" id="loveValue">0%</span>
+          </div>
+          <div class="bar">
+            <div class="fill" id="loveBar"></div>
+          </div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-top">
+            <span>GAMING RNG</span>
+            <span class="metric-value" id="gamingValue">0%</span>
+          </div>
+          <div class="bar">
+            <div class="fill" id="gamingBar"></div>
+          </div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-top">
+            <span>SOCIAL IMPACT</span>
+            <span class="metric-value" id="socialValue">0%</span>
+          </div>
+          <div class="bar">
+            <div class="fill" id="socialBar"></div>
+          </div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-top">
+            <span>CHAOS INDEX</span>
+            <span class="metric-value" id="chaosValue">0%</span>
+          </div>
+          <div class="bar">
+            <div class="fill" id="chaosBar"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="prediction">
+        <div class="small">// PREDICTIVE OUTPUT</div>
+        <p id="prediction"></p>
+      </div>
+
+      <div class="meta-grid">
+
+        <div class="meta">
+          <div class="meta-label">SEED</div>
+          <div class="meta-value" id="seed"></div>
+        </div>
+
+        <div class="meta">
+          <div class="meta-label">ENTROPY</div>
+          <div class="meta-value" id="entropy"></div>
+        </div>
+
+        <div class="meta">
+          <div class="meta-label">TIMELINE</div>
+          <div class="meta-value" id="timeline"></div>
+        </div>
+
+        <div class="meta">
+          <div class="meta-label">ANOMALY</div>
+          <div class="meta-value" id="anomaly"></div>
         </div>
 
       </div>
 
     </div>
 
+    <button class="reset" onclick="resetSystem()">
+      [ REBOOT ANALYSIS ENGINE ]
+    </button>
 
-    <div class="panel">
-
-      <div class="analysis-title">
-        // SYSTEM ANALYSIS
-      </div>
-
-
-      <div class="stat">
-
-        <div class="stat-head">
-          <span>FINANCIAL LUCK</span>
-          <span class="stat-number" id="moneyNumber"></span>
-        </div>
-
-        <div class="bar">
-          <div class="bar-fill" id="moneyBar"></div>
-        </div>
-
-      </div>
-
-
-      <div class="stat">
-
-        <div class="stat-head">
-          <span>RELATIONSHIP</span>
-          <span class="stat-number" id="loveNumber"></span>
-        </div>
-
-        <div class="bar">
-          <div class="bar-fill" id="loveBar"></div>
-        </div>
-
-      </div>
-
-
-      <div class="stat">
-
-        <div class="stat-head">
-          <span>GAMING RNG</span>
-          <span class="stat-number" id="gameNumber"></span>
-        </div>
-
-        <div class="bar">
-          <div class="bar-fill" id="gameBar"></div>
-        </div>
-
-      </div>
-
-
-      <div class="stat">
-
-        <div class="stat-head">
-          <span>SOCIAL ENERGY</span>
-          <span class="stat-number" id="socialNumber"></span>
-        </div>
-
-        <div class="bar">
-          <div class="bar-fill" id="socialBar"></div>
-        </div>
-
-      </div>
-
-
-      <div class="stat">
-
-        <div class="stat-head">
-          <span>CHAOS FACTOR</span>
-          <span class="stat-number" id="chaosNumber"></span>
-        </div>
-
-        <div class="bar">
-          <div class="bar-fill" id="chaosBar"></div>
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="prediction">
-
-      <div class="prediction-label">
-        // SYSTEM PREDICTION
-      </div>
-
-      <div class="prediction-text" id="prediction"></div>
-
-    </div>
-
-  </div>
-
-
-  <button class="restart" onclick="restart()">
-    [ RUN NEW ANALYSIS ]
-  </button>
-
-</section>
+  </section>
 
 </div>
 
-
 <script>
 
+const logs = [
+  ["CONNECTING TO PROBABILITY NODE...", "normal"],
+  ["AUTHENTICATING SUBJECT...", "normal"],
+  ["IDENTITY HASH GENERATED.", "muted"],
+  ["READING LOCAL ENTROPY...", "normal"],
+  ["MAPPING RANDOM EVENT VECTORS...", "normal"],
+  ["SYNCING FINANCIAL CHANNEL...", "normal"],
+  ["SYNCING RELATIONSHIP CHANNEL...", "normal"],
+  ["SYNCING GAMING RNG...", "normal"],
+  ["SCANNING SOCIAL SIGNALS...", "normal"],
+  ["WARNING: CHAOS COEFFICIENT DETECTED.", "danger"],
+  ["BUILDING TEMPORAL MODEL...", "normal"],
+  ["DECRYPTING LUCKCORE INDEX...", "normal"],
+  ["GENERATING FINAL PREDICTION...", "normal"],
+  ["ANALYSIS COMPLETE.", "normal"]
+];
+
 const predictions = [
-
-  "Probabilitatea unui eveniment neașteptat este ridicată. Nu ignora oportunitățile mici.",
-
-  "Sistemul detectează o anomalie pozitivă în următoarele ore. Ceva random poate ieși foarte bine.",
-
-  "Nivel ridicat de noroc social. Un mesaj neașteptat poate schimba direcția zilei.",
-
-  "RNG-ul tău este momentan instabil. Nu risca totul pe o singură alegere.",
-
-  "Semnal financiar detectat. Ai grijă unde te uiți și ce oportunități apar.",
-
-  "Ziua prezintă nivel ridicat de haos. Rezultatul final poate fi surprinzător de bun.",
-
-  "Sistemul recomandă să încerci ceva ce ai amânat. Probabilitatea de succes este peste medie.",
-
-  "Ai intrat într-o fereastră rară de noroc. Folosește-o înainte să expire.",
-
-  "Activitate suspectă detectată în sectorul romantic. 👀",
-
-  "Protocolul nu poate prezice complet această zi. Prea multe variabile favorabile au fost detectate."
-
+  "Anomalie pozitivă detectată. O alegere spontană are probabilitate ridicată să producă un rezultat bun.",
+  "Canalul social este activ. Un mesaj neașteptat poate schimba direcția zilei.",
+  "Motorul detectează o fereastră rară de probabilitate favorabilă. Nu rata oportunitățile mici.",
+  "Gaming RNG peste medie. Următoarea sesiune are șanse serioase să-ți iasă mai bine decât te aștepți.",
+  "Coeficientul de haos este ridicat, dar vectorul final rămâne pozitiv. Azi poate fi ciudat, dar bun.",
+  "Semnal romantic detectat. Sistemul recomandă să fii atent la cine îți scrie sau cine îți caută atenția.",
+  "Probabilitatea unui eveniment random memorabil este ridicată în următoarele ore.",
+  "Sistemul nu poate stabiliza complet predicția. Prea multe variabile pozitive rulează simultan.",
+  "Ai intrat într-o zonă de noroc instabil, dar puternic. Folosește momentul înainte să dispară.",
+  "Motorul recomandă să faci azi ceva ce ai amânat. Șansele de rezultat bun sunt peste medie."
 ];
 
-const terminalMessages = [
-
-  "> establishing secure connection...",
-  "> identity accepted...",
-  "> reading probability matrix...",
-  "> synchronizing random seed...",
-  "> analysing financial vector...",
-  "> scanning relationship signals...",
-  "> calculating gaming RNG...",
-  "> measuring chaos coefficient...",
-  "> checking timeline anomalies...",
-  "> generating prediction...",
-  "> decrypting final score...",
-  "> SCAN COMPLETE."
-
-];
-
-function random(min,max){
+function rand(min,max){
   return Math.floor(Math.random()*(max-min+1))+min;
 }
 
-
-function startScan(){
-
-  let name =
-    document.getElementById("username").value.trim();
-
-  if(!name){
-    name="UNKNOWN";
+function hex(length){
+  const chars="ABCDEF0123456789";
+  let out="";
+  for(let i=0;i<length;i++){
+    out+=chars[rand(0,chars.length-1)];
   }
-
-  document.getElementById("home").style.display="none";
-
-  document.getElementById("scanner").style.display="flex";
-
-  document.getElementById("terminal").innerHTML="";
-
-  document.getElementById("progress").style.width="0%";
-
-  runTerminal(name);
-
+  return out;
 }
 
+function boot(){
 
-function runTerminal(name){
+  let name=document.getElementById("username").value.trim();
 
-  let index=0;
+  if(!name){
+    name="UNKNOWN_SUBJECT";
+  }
 
-  const terminal =
-    document.getElementById("terminal");
+  document.getElementById("hero").style.display="none";
+  document.getElementById("loading").style.display="flex";
 
-  const progress =
-    document.getElementById("progress");
+  const terminal=document.getElementById("terminal");
+  const progress=document.getElementById("progress");
+
+  terminal.innerHTML="";
+  progress.style.width="0%";
+
+  let i=0;
 
   const interval=setInterval(()=>{
 
-    if(index < terminalMessages.length){
+    if(i<logs.length){
 
-      const line =
-        document.createElement("div");
+      const row=document.createElement("div");
 
-      line.textContent =
-        terminalMessages[index];
+      row.textContent="> "+logs[i][0];
 
-      terminal.appendChild(line);
+      if(logs[i][1]==="muted"){
+        row.className="line-muted";
+      }
 
-      progress.style.width =
-        ((index+1)/terminalMessages.length)*100+"%";
+      if(logs[i][1]==="danger"){
+        row.className="line-danger";
+      }
 
-      index++;
+      terminal.appendChild(row);
+
+      terminal.scrollTop=terminal.scrollHeight;
+
+      progress.style.width=
+        ((i+1)/logs.length)*100+"%";
+
+      i++;
 
     }else{
 
       clearInterval(interval);
 
       setTimeout(()=>{
-        showResult(name);
-      },600);
+        reveal(name);
+      },650);
 
     }
 
-  },220);
+  },180);
 
 }
 
+function reveal(name){
 
-function showResult(name){
+  document.getElementById("loading").style.display="none";
 
-  document.getElementById("scanner").style.display="none";
-
-  const result =
-    document.getElementById("result");
+  const result=document.getElementById("result");
 
   result.style.display="block";
-
   result.classList.add("glitch");
 
   setTimeout(()=>{
     result.classList.remove("glitch");
-  },600);
+  },700);
 
+  const score=rand(10,100);
 
-  const score=random(15,100);
+  const data={
+    money:rand(5,100),
+    love:rand(5,100),
+    gaming:rand(5,100),
+    social:rand(5,100),
+    chaos:rand(5,100)
+  };
 
-  const money=random(5,100);
-  const love=random(5,100);
-  const game=random(5,100);
-  const social=random(5,100);
-  const chaos=random(5,100);
-
-
-  document.getElementById("resultName").textContent =
+  document.getElementById("subjectName").textContent=
     name.toUpperCase();
 
+  animateNumber(score);
 
-  animateScore(score);
+  const deg=score*3.6;
 
-
-  setBar("money",money);
-  setBar("love",love);
-  setBar("game",game);
-  setBar("social",social);
-  setBar("chaos",chaos);
-
-
-  const degree=score*3.6;
-
-  document.getElementById("scoreRing").style.background =
+  document.getElementById("scoreRing").style.background=
     `conic-gradient(
-      #00ff9d 0deg,
-      #00eaff ${degree}deg,
-      rgba(255,255,255,.05) ${degree}deg
+      #00ff9c 0deg,
+      #00e5ff ${deg}deg,
+      rgba(255,255,255,.04) ${deg}deg
     )`;
 
+  Object.keys(data).forEach(key=>{
 
-  document.getElementById("prediction").textContent =
-    predictions[
-      random(0,predictions.length-1)
-    ];
+    document.getElementById(key+"Value").textContent=
+      data[key]+"%";
 
+    setTimeout(()=>{
+      document.getElementById(key+"Bar").style.width=
+        data[key]+"%";
+    },180);
 
-  const classification =
-    document.getElementById("classification");
+  });
 
+  document.getElementById("prediction").textContent=
+    predictions[rand(0,predictions.length-1)];
 
-  if(score>=90){
+  document.getElementById("seed").textContent=
+    "0x"+hex(8);
 
-    classification.textContent=
-      "CLASSIFICATION: LEGENDARY";
+  document.getElementById("entropy").textContent=
+    rand(7000,9999)+"."+rand(10,99);
 
-  }
+  document.getElementById("timeline").textContent=
+    "T-"+rand(100,999);
 
-  else if(score>=75){
+  document.getElementById("anomaly").textContent=
+    rand(0,100)+"%";
 
-    classification.textContent=
-      "CLASSIFICATION: ELITE";
-
-  }
-
-  else if(score>=50){
-
-    classification.textContent=
-      "CLASSIFICATION: STABLE";
-
-  }
-
-  else if(score>=30){
-
-    classification.textContent=
-      "CLASSIFICATION: UNSTABLE";
-
-  }
-
-  else{
-
-    classification.textContent=
-      "CLASSIFICATION: DANGER";
-
-    classification.style.color="#ff315c";
-
-    classification.style.borderColor=
-      "rgba(255,49,92,.5)";
-
-  }
+  classify(score);
 
 }
 
+function animateNumber(target){
 
-function animateScore(target){
-
-  const el =
-    document.getElementById("score");
+  const el=document.getElementById("score");
 
   let value=0;
 
-  const speed =
-    Math.max(10,800/target);
-
-  const interval=setInterval(()=>{
+  const timer=setInterval(()=>{
 
     value++;
 
-    el.textContent =
+    el.textContent=
       String(value).padStart(2,"0");
 
     if(value>=target){
-
-      clearInterval(interval);
-
+      clearInterval(timer);
     }
 
-  },speed);
+  },Math.max(8,650/target));
 
 }
 
+function classify(score){
 
-function setBar(name,value){
+  const el=document.getElementById("classification");
 
-  document.getElementById(
-    name+"Number"
-  ).textContent=value+"%";
+  el.style.color="";
+  el.style.borderColor="";
 
-  setTimeout(()=>{
-
-    document.getElementById(
-      name+"Bar"
-    ).style.width=value+"%";
-
-  },150);
-
-}
-
-
-function restart(){
-
-  document.getElementById("result").style.display="none";
-
-  document.getElementById("home").style.display="flex";
-
-  document
-    .querySelectorAll(".bar-fill")
-    .forEach(bar=>{
-      bar.style.width="0%";
-    });
-
-  const classification =
-    document.getElementById("classification");
-
-  classification.style.color="";
-  classification.style.borderColor="";
-
-}
-
-
-document
-.getElementById("username")
-.addEventListener("keydown",e=>{
-
-  if(e.key==="Enter"){
-    startScan();
+  if(score>=93){
+    el.textContent="CLASS: MYTHIC";
+  }
+  else if(score>=80){
+    el.textContent="CLASS: ELITE";
+  }
+  else if(score>=65){
+    el.textContent="CLASS: HIGH";
+  }
+  else if(score>=45){
+    el.textContent="CLASS: STABLE";
+  }
+  else if(score>=25){
+    el.textContent="CLASS: UNSTABLE";
+  }
+  else{
+    el.textContent="CLASS: CRITICAL";
+    el.style.color="var(--red)";
+    el.style.borderColor="rgba(255,54,95,.5)";
   }
 
+}
+
+function resetSystem(){
+
+  document.getElementById("result").style.display="none";
+  document.getElementById("hero").style.display="grid";
+
+  document.querySelectorAll(".fill").forEach(fill=>{
+    fill.style.width="0%";
+  });
+
+  document.getElementById("score").textContent="00";
+
+}
+
+document.getElementById("username").addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+    boot();
+  }
 });
 
+/* particles */
 
-/* FLOATING PARTICLES */
+for(let i=0;i<70;i++){
 
-for(let i=0;i<45;i++){
-
-  const p =
-    document.createElement("div");
+  const p=document.createElement("div");
 
   p.className="particle";
 
-  p.style.left =
-    Math.random()*100+"vw";
-
-  p.style.animationDuration =
-    5+Math.random()*12+"s";
-
-  p.style.animationDelay =
-    -Math.random()*10+"s";
-
-  p.style.opacity =
-    Math.random()*.7;
+  p.style.left=Math.random()*100+"vw";
+  p.style.animationDuration=
+    5+Math.random()*14+"s";
+  p.style.animationDelay=
+    -Math.random()*15+"s";
+  p.style.opacity=
+    .15+Math.random()*.5;
 
   document.body.appendChild(p);
 
