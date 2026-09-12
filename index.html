@@ -1,703 +1,1123 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lucky Scan</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<title>LUCK // PROTOCOL</title>
 
-    :root {
-      --bg: #070b16;
-      --card: rgba(255,255,255,0.08);
-      --border: rgba(255,255,255,0.12);
-      --text: #ffffff;
-      --muted: #9ca3af;
-      --purple: #8b5cf6;
-      --pink: #ec4899;
-      --cyan: #22d3ee;
-      --green: #34d399;
-    }
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
-    body {
-      min-height: 100vh;
-      font-family: Inter, Arial, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(139,92,246,.25), transparent 30%),
-        radial-gradient(circle at bottom right, rgba(34,211,238,.18), transparent 30%),
-        var(--bg);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow-x: hidden;
-    }
+:root{
+  --bg:#020304;
+  --panel:rgba(5,12,14,.82);
+  --green:#00ff9d;
+  --cyan:#00eaff;
+  --red:#ff315c;
+  --muted:#607079;
+}
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-    }
+body{
+  min-height:100vh;
+  font-family:"Courier New",monospace;
+  background:#020304;
+  color:white;
+  overflow-x:hidden;
+}
 
-    .orb {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(70px);
-      opacity: .4;
-      animation: float 7s ease-in-out infinite alternate;
-    }
+/* GRID BACKGROUND */
 
-    .orb.one {
-      width: 260px;
-      height: 260px;
-      background: #7c3aed;
-      top: 8%;
-      left: 8%;
-    }
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    linear-gradient(rgba(0,255,157,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,157,.035) 1px,transparent 1px);
+  background-size:35px 35px;
+  pointer-events:none;
+  mask-image:linear-gradient(to bottom,black,transparent 95%);
+}
 
-    .orb.two {
-      width: 220px;
-      height: 220px;
-      background: #0891b2;
-      bottom: 8%;
-      right: 8%;
-      animation-delay: 1.5s;
-    }
+/* NOISE */
 
-    @keyframes float {
-      from { transform: translateY(-20px) translateX(0); }
-      to { transform: translateY(30px) translateX(25px); }
-    }
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.07;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+}
 
-    .app {
-      width: min(94%, 760px);
-      padding: 26px;
-      border-radius: 30px;
-      background: rgba(11, 17, 32, .72);
-      backdrop-filter: blur(22px);
-      border: 1px solid var(--border);
-      box-shadow: 0 30px 90px rgba(0,0,0,.45);
-      position: relative;
-      z-index: 2;
-    }
+/* GLOW */
 
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 26px;
-    }
+.glow{
+  position:fixed;
+  width:500px;
+  height:500px;
+  border-radius:50%;
+  filter:blur(140px);
+  opacity:.13;
+  pointer-events:none;
+}
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      letter-spacing: .4px;
-    }
+.g1{
+  background:var(--green);
+  top:-180px;
+  left:-150px;
+}
 
-    .logo-badge {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, var(--purple), var(--cyan));
-      box-shadow: 0 8px 30px rgba(139,92,246,.35);
-    }
+.g2{
+  background:var(--cyan);
+  right:-180px;
+  bottom:-180px;
+}
 
-    .status {
-      font-size: 13px;
-      color: var(--green);
-      padding: 8px 12px;
-      border: 1px solid rgba(52,211,153,.25);
-      background: rgba(52,211,153,.08);
-      border-radius: 999px;
-    }
+/* APP */
 
-    .hero {
-      text-align: center;
-      padding: 18px 8px 10px;
-    }
+.app{
+  width:min(1100px,94%);
+  margin:auto;
+  padding:28px 0 50px;
+  position:relative;
+  z-index:2;
+}
 
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      color: #d8b4fe;
-      background: rgba(139,92,246,.12);
-      border: 1px solid rgba(139,92,246,.25);
-      font-size: 13px;
-      margin-bottom: 18px;
-    }
+/* TOP */
 
-    h1 {
-      font-size: clamp(42px, 8vw, 74px);
-      line-height: .96;
-      letter-spacing: -3px;
-      margin-bottom: 18px;
-    }
+nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid rgba(0,255,157,.15);
+  padding:13px 0 20px;
+}
 
-    .gradient-text {
-      background: linear-gradient(90deg, #fff, #c4b5fd, #67e8f9);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
+.logo{
+  color:var(--green);
+  font-size:18px;
+  font-weight:bold;
+  letter-spacing:4px;
+}
 
-    .subtitle {
-      color: var(--muted);
-      font-size: 16px;
-      max-width: 560px;
-      margin: 0 auto 28px;
-      line-height: 1.6;
-    }
+.system{
+  font-size:12px;
+  color:var(--green);
+}
 
-    .input-wrap {
-      max-width: 480px;
-      margin: 0 auto;
-      display: flex;
-      gap: 10px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid var(--border);
-      padding: 8px;
-      border-radius: 18px;
-    }
+.blink{
+  animation:blink .8s infinite;
+}
 
-    input {
-      flex: 1;
-      min-width: 0;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: white;
-      font-size: 16px;
-      padding: 14px;
-    }
+@keyframes blink{
+  50%{opacity:.15}
+}
 
-    input::placeholder {
-      color: #6b7280;
-    }
+/* HERO */
 
-    .main-btn {
-      border: none;
-      border-radius: 14px;
-      padding: 0 20px;
-      min-height: 52px;
-      color: white;
-      cursor: pointer;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--purple), var(--pink));
-      box-shadow: 0 12px 30px rgba(236,72,153,.22);
-      transition: .2s;
-    }
+.hero{
+  min-height:75vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
 
-    .main-btn:hover {
-      transform: translateY(-2px);
-      filter: brightness(1.08);
-    }
+.hero-inner{
+  width:min(800px,100%);
+}
 
-    #result {
-      display: none;
-      margin-top: 26px;
-      animation: show .45s ease;
-    }
+.code{
+  color:var(--green);
+  letter-spacing:2px;
+  font-size:12px;
+  margin-bottom:18px;
+}
 
-    @keyframes show {
-      from {
-        opacity: 0;
-        transform: translateY(16px) scale(.98);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
+h1{
+  font-family:Arial Black,Arial,sans-serif;
+  font-size:clamp(50px,10vw,110px);
+  line-height:.82;
+  letter-spacing:-6px;
+  margin-bottom:26px;
+}
 
-    .result-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
+.stroke{
+  color:transparent;
+  -webkit-text-stroke:1px rgba(255,255,255,.7);
+}
 
-    .panel {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 22px;
-    }
+.green{
+  color:var(--green);
+  text-shadow:0 0 35px rgba(0,255,157,.4);
+}
 
-    .score-panel {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 270px;
-    }
+.desc{
+  max-width:600px;
+  margin:auto;
+  color:#829197;
+  line-height:1.7;
+  font-size:14px;
+}
 
-    .score-ring {
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      position: relative;
-      background:
-        conic-gradient(
-          var(--cyan) 0deg,
-          var(--purple) 180deg,
-          rgba(255,255,255,.08) 180deg
-        );
-    }
+/* FORM */
 
-    .score-ring::before {
-      content: "";
-      width: 150px;
-      height: 150px;
-      position: absolute;
-      border-radius: 50%;
-      background: #0d1323;
-    }
+.input-box{
+  margin:35px auto 0;
+  max-width:620px;
+  display:flex;
+  border:1px solid rgba(0,255,157,.35);
+  background:rgba(0,0,0,.55);
+  position:relative;
+}
 
-    .score-inside {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-    }
+.input-box::before,
+.input-box::after{
+  content:"";
+  position:absolute;
+  width:15px;
+  height:15px;
+}
 
-    .score {
-      font-size: 56px;
-      font-weight: 900;
-      letter-spacing: -2px;
-    }
+.input-box::before{
+  left:-1px;
+  top:-1px;
+  border-left:2px solid var(--green);
+  border-top:2px solid var(--green);
+}
 
-    .out-of {
-      color: var(--muted);
-      font-size: 13px;
-    }
+.input-box::after{
+  right:-1px;
+  bottom:-1px;
+  border-right:2px solid var(--green);
+  border-bottom:2px solid var(--green);
+}
 
-    .name-result {
-      margin-top: 18px;
-      color: #c4b5fd;
-      font-weight: 700;
-    }
+input{
+  width:100%;
+  background:transparent;
+  border:0;
+  outline:0;
+  color:white;
+  font-family:inherit;
+  font-size:16px;
+  padding:20px;
+}
 
-    .stats {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+input::placeholder{
+  color:#435058;
+}
 
-    .stat {
-      padding: 15px;
-      border-radius: 16px;
-      background: rgba(255,255,255,.045);
-      border: 1px solid rgba(255,255,255,.06);
-    }
+button{
+  border:0;
+  cursor:pointer;
+  font-family:inherit;
+}
 
-    .stat-top {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 9px;
-    }
+.scan-btn{
+  min-width:170px;
+  background:var(--green);
+  color:#001009;
+  font-weight:900;
+  letter-spacing:1px;
+  clip-path:polygon(0 0,100% 0,100% 75%,88% 100%,0 100%);
+  transition:.2s;
+}
 
-    .stat-name {
-      font-size: 14px;
-    }
+.scan-btn:hover{
+  box-shadow:0 0 40px rgba(0,255,157,.5);
+  filter:brightness(1.15);
+}
 
-    .stat-value {
-      font-weight: 800;
-    }
+/* SCANNING SCREEN */
 
-    .bar {
-      height: 7px;
-      background: rgba(255,255,255,.07);
-      border-radius: 99px;
-      overflow: hidden;
-    }
+#scanner{
+  display:none;
+  min-height:75vh;
+  align-items:center;
+  justify-content:center;
+}
 
-    .bar-fill {
-      height: 100%;
-      width: 0;
-      border-radius: 99px;
-      background: linear-gradient(90deg, var(--purple), var(--cyan));
-      transition: width .8s ease;
-    }
+.scan-window{
+  width:min(800px,100%);
+  border:1px solid rgba(0,255,157,.25);
+  background:rgba(1,6,7,.8);
+  padding:35px;
+  position:relative;
+  overflow:hidden;
+}
 
-    .prediction {
-      margin-top: 16px;
-      padding: 20px;
-      border-radius: 20px;
-      background:
-        linear-gradient(135deg, rgba(139,92,246,.12), rgba(34,211,238,.06));
-      border: 1px solid rgba(139,92,246,.2);
-      font-size: 17px;
-      line-height: 1.5;
-    }
+.scan-line{
+  position:absolute;
+  left:0;
+  width:100%;
+  height:2px;
+  background:var(--green);
+  box-shadow:0 0 25px var(--green);
+  animation:scanLine 1.6s linear infinite;
+}
 
-    .again {
-      width: 100%;
-      margin-top: 16px;
-      padding: 15px;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      background: rgba(255,255,255,.05);
-      color: white;
-      cursor: pointer;
-      font-weight: 700;
-    }
+@keyframes scanLine{
+  from{top:0}
+  to{top:100%}
+}
 
-    .again:hover {
-      background: rgba(255,255,255,.09);
-    }
+.terminal-title{
+  color:var(--green);
+  font-size:13px;
+  margin-bottom:25px;
+}
 
-    .footer {
-      text-align: center;
-      color: #4b5563;
-      font-size: 12px;
-      margin-top: 22px;
-    }
+.terminal{
+  height:230px;
+  color:#8fffd0;
+  font-size:13px;
+  line-height:1.8;
+  overflow:hidden;
+}
 
-    .confetti {
-      position: fixed;
-      top: -30px;
-      width: 9px;
-      height: 16px;
-      border-radius: 3px;
-      z-index: 10;
-      animation: confettiFall linear forwards;
-    }
+.progress-shell{
+  height:15px;
+  border:1px solid rgba(0,255,157,.35);
+  margin-top:25px;
+  padding:3px;
+}
 
-    @keyframes confettiFall {
-      to {
-        transform: translateY(110vh) rotate(900deg);
-        opacity: .9;
-      }
-    }
+.progress{
+  width:0%;
+  height:100%;
+  background:var(--green);
+  box-shadow:0 0 20px rgba(0,255,157,.7);
+}
 
-    @media (max-width: 650px) {
-      .app {
-        padding: 18px;
-        border-radius: 24px;
-      }
+/* RESULT */
 
-      .topbar {
-        margin-bottom: 10px;
-      }
+#result{
+  display:none;
+  padding-top:55px;
+}
 
-      .result-grid {
-        grid-template-columns: 1fr;
-      }
+.result-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  margin-bottom:25px;
+}
 
-      .input-wrap {
-        flex-direction: column;
-      }
+.result-label{
+  color:var(--green);
+  font-size:12px;
+  letter-spacing:3px;
+}
 
-      .main-btn {
-        width: 100%;
-      }
+.result-name{
+  font-size:clamp(32px,6vw,70px);
+  letter-spacing:-3px;
+  font-family:Arial Black,Arial,sans-serif;
+}
 
-      h1 {
-        letter-spacing: -2px;
-      }
-    }
-  </style>
+.risk{
+  color:var(--green);
+  border:1px solid rgba(0,255,157,.3);
+  padding:10px 15px;
+  font-size:12px;
+}
+
+.dashboard{
+  display:grid;
+  grid-template-columns:1.1fr 1fr;
+  gap:18px;
+}
+
+.panel{
+  background:var(--panel);
+  border:1px solid rgba(255,255,255,.08);
+  position:relative;
+  padding:25px;
+}
+
+.panel::before{
+  content:"";
+  position:absolute;
+  width:18px;
+  height:18px;
+  left:-1px;
+  top:-1px;
+  border-left:2px solid var(--green);
+  border-top:2px solid var(--green);
+}
+
+.score-panel{
+  min-height:440px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.score-ring{
+  width:270px;
+  height:270px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  position:relative;
+  background:conic-gradient(
+    var(--green) 0deg,
+    rgba(255,255,255,.05) 0deg
+  );
+  box-shadow:
+    0 0 60px rgba(0,255,157,.12),
+    inset 0 0 50px rgba(0,0,0,.9);
+}
+
+.score-ring::before{
+  content:"";
+  position:absolute;
+  width:235px;
+  height:235px;
+  border-radius:50%;
+  background:#030809;
+  border:1px solid rgba(0,255,157,.15);
+}
+
+.score-data{
+  z-index:2;
+  text-align:center;
+}
+
+.score{
+  font-family:Arial Black,Arial,sans-serif;
+  font-size:80px;
+  letter-spacing:-6px;
+}
+
+.score-small{
+  color:var(--green);
+  font-size:11px;
+  letter-spacing:4px;
+}
+
+.analysis-title{
+  color:#79888f;
+  font-size:11px;
+  letter-spacing:2px;
+  margin-bottom:20px;
+}
+
+.stat{
+  margin-bottom:27px;
+}
+
+.stat-head{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  margin-bottom:10px;
+}
+
+.stat-number{
+  color:var(--green);
+}
+
+.bar{
+  height:5px;
+  background:#10191c;
+  overflow:hidden;
+}
+
+.bar-fill{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg,var(--green),var(--cyan));
+  box-shadow:0 0 12px rgba(0,255,157,.5);
+  transition:width 1.5s cubic-bezier(.16,1,.3,1);
+}
+
+/* PREDICTION */
+
+.prediction{
+  grid-column:1/-1;
+  padding:25px;
+  border-left:3px solid var(--green);
+  background:linear-gradient(
+    90deg,
+    rgba(0,255,157,.07),
+    rgba(0,234,255,.025)
+  );
+}
+
+.prediction-label{
+  color:var(--green);
+  font-size:11px;
+  letter-spacing:3px;
+  margin-bottom:12px;
+}
+
+.prediction-text{
+  font-size:17px;
+  line-height:1.6;
+}
+
+/* BUTTON */
+
+.restart{
+  margin-top:20px;
+  width:100%;
+  padding:18px;
+  background:transparent;
+  color:white;
+  border:1px solid rgba(255,255,255,.13);
+  transition:.2s;
+}
+
+.restart:hover{
+  color:var(--green);
+  border-color:var(--green);
+}
+
+/* GLITCH */
+
+.glitch{
+  animation:glitch .16s linear 3;
+}
+
+@keyframes glitch{
+  0%{transform:translate(0)}
+  25%{transform:translate(-5px,2px)}
+  50%{transform:translate(6px,-2px)}
+  75%{transform:translate(-3px,-1px)}
+  100%{transform:translate(0)}
+}
+
+/* PARTICLES */
+
+.particle{
+  position:fixed;
+  width:2px;
+  height:2px;
+  background:var(--green);
+  opacity:.5;
+  pointer-events:none;
+  animation:particleMove linear infinite;
+}
+
+@keyframes particleMove{
+  from{
+    transform:translateY(100vh);
+  }
+  to{
+    transform:translateY(-20px);
+  }
+}
+
+/* MOBILE */
+
+@media(max-width:750px){
+
+  h1{
+    letter-spacing:-3px;
+  }
+
+  .dashboard{
+    grid-template-columns:1fr;
+  }
+
+  .prediction{
+    grid-column:1;
+  }
+
+  .result-header{
+    display:block;
+  }
+
+  .risk{
+    margin-top:15px;
+    display:inline-block;
+  }
+
+  .input-box{
+    display:block;
+  }
+
+  .scan-btn{
+    width:100%;
+    padding:18px;
+  }
+
+  .score-ring{
+    width:220px;
+    height:220px;
+  }
+
+  .score-ring::before{
+    width:190px;
+    height:190px;
+  }
+
+  .score{
+    font-size:65px;
+  }
+}
+
+</style>
 </head>
 
 <body>
 
-  <div class="orb one"></div>
-  <div class="orb two"></div>
+<div class="glow g1"></div>
+<div class="glow g2"></div>
 
-  <main class="app">
+<div class="app">
 
-    <div class="topbar">
-      <div class="logo">
-        <div class="logo-badge">✦</div>
-        LuckyScan
-      </div>
+<nav>
 
-      <div class="status">
-        ● LIVE
-      </div>
+  <div class="logo">
+    LUCK//PROTOCOL
+  </div>
+
+  <div class="system">
+    SYSTEM ONLINE <span class="blink">■</span>
+  </div>
+
+</nav>
+
+<!-- HOME -->
+
+<section class="hero" id="home">
+
+  <div class="hero-inner">
+
+    <div class="code">
+      [ SYSTEM ACCESS GRANTED ]
     </div>
 
-    <section class="hero" id="start">
+    <h1>
+      <span class="stroke">CHECK YOUR</span><br>
+      <span class="green">LUCK.</span>
+    </h1>
 
-      <div class="pill">
-        ✨ AI Luck Scanner 2026
-      </div>
+    <p class="desc">
+      Protocol experimental pentru analiza nivelului tău de noroc.
+      Introdu identificatorul și pornește scanarea.
+    </p>
 
-      <h1>
-        <span class="gradient-text">Scanează-ți norocul.</span>
-      </h1>
+    <div class="input-box">
 
-      <p class="subtitle">
-        Introdu numele și vezi ce scor de noroc îți rezervă ziua de azi.
-        Rezultatele sunt generate pentru distracție.
-      </p>
+      <input
+        id="username"
+        type="text"
+        maxlength="22"
+        placeholder="ENTER_IDENTITY..."
+      >
 
-      <div class="input-wrap">
-        <input
-          type="text"
-          id="name"
-          placeholder="Ex: Alex"
-          maxlength="24"
-        />
-
-        <button
-          class="main-btn"
-          onclick="scanLuck()"
-        >
-          SCANEAZĂ ⚡
-        </button>
-      </div>
-
-    </section>
-
-    <section id="result">
-
-      <div class="result-grid">
-
-        <div class="panel score-panel">
-
-          <div class="score-ring" id="scoreRing">
-            <div class="score-inside">
-              <div class="score" id="score">0</div>
-              <div class="out-of">din 100</div>
-            </div>
-          </div>
-
-          <div class="name-result" id="resultName"></div>
-
-        </div>
-
-        <div class="panel">
-
-          <div class="stats">
-
-            <div class="stat">
-              <div class="stat-top">
-                <span class="stat-name">💸 Bani</span>
-                <span class="stat-value" id="moneyValue"></span>
-              </div>
-              <div class="bar">
-                <div class="bar-fill" id="moneyBar"></div>
-              </div>
-            </div>
-
-            <div class="stat">
-              <div class="stat-top">
-                <span class="stat-name">❤️ Dragoste</span>
-                <span class="stat-value" id="loveValue"></span>
-              </div>
-              <div class="bar">
-                <div class="bar-fill" id="loveBar"></div>
-              </div>
-            </div>
-
-            <div class="stat">
-              <div class="stat-top">
-                <span class="stat-name">🎮 Gaming</span>
-                <span class="stat-value" id="gameValue"></span>
-              </div>
-              <div class="bar">
-                <div class="bar-fill" id="gameBar"></div>
-              </div>
-            </div>
-
-            <div class="stat">
-              <div class="stat-top">
-                <span class="stat-name">📱 Social</span>
-                <span class="stat-value" id="socialValue"></span>
-              </div>
-              <div class="bar">
-                <div class="bar-fill" id="socialBar"></div>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      <div class="prediction" id="prediction"></div>
-
-      <button class="again" onclick="resetScan()">
-        ↻ Scanează din nou
+      <button class="scan-btn" onclick="startScan()">
+        EXECUTE
       </button>
 
-    </section>
-
-    <div class="footer">
-      LuckyScan • făcut doar pentru distracție
     </div>
 
-  </main>
+  </div>
 
-  <script>
+</section>
 
-    const predictions = [
-      "Azi ai energie de personaj principal. 😎",
-      "E posibil să primești un mesaj exact când nu te aștepți. 📱",
-      "Norocul tău este suspect de bun azi. 🍀",
-      "Ceva ce părea blocat ar putea începe să funcționeze. ⚡",
-      "Ai șanse mari să ai parte de o surpriză interesantă. 👀",
-      "Universul îți spune să încerci ceva nou azi. ✨",
-      "Azi e genul de zi în care o idee random poate deveni una foarte bună. 💡",
-      "Nu ignora oportunitățile mici. Una dintre ele poate deveni importantă. 🚀",
-      "Ziua ta are potențial de screenshot. 📸",
-      "Ai grijă la colțurile de mobilă. Norocul nu te protejează de toate. 💀"
+
+<!-- SCANNER -->
+
+<section id="scanner">
+
+  <div class="scan-window">
+
+    <div class="scan-line"></div>
+
+    <div class="terminal-title">
+      > LUCK_ANALYSIS_ENGINE v4.8
+    </div>
+
+    <div class="terminal" id="terminal"></div>
+
+    <div class="progress-shell">
+      <div class="progress" id="progress"></div>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- RESULT -->
+
+<section id="result">
+
+  <div class="result-header">
+
+    <div>
+
+      <div class="result-label">
+        SCAN COMPLETE //
+      </div>
+
+      <div class="result-name" id="resultName">
+        UNKNOWN
+      </div>
+
+    </div>
+
+    <div class="risk" id="classification">
+      CLASSIFICATION: UNKNOWN
+    </div>
+
+  </div>
+
+
+  <div class="dashboard">
+
+
+    <div class="panel score-panel">
+
+      <div class="score-ring" id="scoreRing">
+
+        <div class="score-data">
+
+          <div class="score" id="score">
+            00
+          </div>
+
+          <div class="score-small">
+            LUCK INDEX
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="panel">
+
+      <div class="analysis-title">
+        // SYSTEM ANALYSIS
+      </div>
+
+
+      <div class="stat">
+
+        <div class="stat-head">
+          <span>FINANCIAL LUCK</span>
+          <span class="stat-number" id="moneyNumber"></span>
+        </div>
+
+        <div class="bar">
+          <div class="bar-fill" id="moneyBar"></div>
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div class="stat-head">
+          <span>RELATIONSHIP</span>
+          <span class="stat-number" id="loveNumber"></span>
+        </div>
+
+        <div class="bar">
+          <div class="bar-fill" id="loveBar"></div>
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div class="stat-head">
+          <span>GAMING RNG</span>
+          <span class="stat-number" id="gameNumber"></span>
+        </div>
+
+        <div class="bar">
+          <div class="bar-fill" id="gameBar"></div>
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div class="stat-head">
+          <span>SOCIAL ENERGY</span>
+          <span class="stat-number" id="socialNumber"></span>
+        </div>
+
+        <div class="bar">
+          <div class="bar-fill" id="socialBar"></div>
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div class="stat-head">
+          <span>CHAOS FACTOR</span>
+          <span class="stat-number" id="chaosNumber"></span>
+        </div>
+
+        <div class="bar">
+          <div class="bar-fill" id="chaosBar"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="prediction">
+
+      <div class="prediction-label">
+        // SYSTEM PREDICTION
+      </div>
+
+      <div class="prediction-text" id="prediction"></div>
+
+    </div>
+
+  </div>
+
+
+  <button class="restart" onclick="restart()">
+    [ RUN NEW ANALYSIS ]
+  </button>
+
+</section>
+
+</div>
+
+
+<script>
+
+const predictions = [
+
+  "Probabilitatea unui eveniment neașteptat este ridicată. Nu ignora oportunitățile mici.",
+
+  "Sistemul detectează o anomalie pozitivă în următoarele ore. Ceva random poate ieși foarte bine.",
+
+  "Nivel ridicat de noroc social. Un mesaj neașteptat poate schimba direcția zilei.",
+
+  "RNG-ul tău este momentan instabil. Nu risca totul pe o singură alegere.",
+
+  "Semnal financiar detectat. Ai grijă unde te uiți și ce oportunități apar.",
+
+  "Ziua prezintă nivel ridicat de haos. Rezultatul final poate fi surprinzător de bun.",
+
+  "Sistemul recomandă să încerci ceva ce ai amânat. Probabilitatea de succes este peste medie.",
+
+  "Ai intrat într-o fereastră rară de noroc. Folosește-o înainte să expire.",
+
+  "Activitate suspectă detectată în sectorul romantic. 👀",
+
+  "Protocolul nu poate prezice complet această zi. Prea multe variabile favorabile au fost detectate."
+
+];
+
+const terminalMessages = [
+
+  "> establishing secure connection...",
+  "> identity accepted...",
+  "> reading probability matrix...",
+  "> synchronizing random seed...",
+  "> analysing financial vector...",
+  "> scanning relationship signals...",
+  "> calculating gaming RNG...",
+  "> measuring chaos coefficient...",
+  "> checking timeline anomalies...",
+  "> generating prediction...",
+  "> decrypting final score...",
+  "> SCAN COMPLETE."
+
+];
+
+function random(min,max){
+  return Math.floor(Math.random()*(max-min+1))+min;
+}
+
+
+function startScan(){
+
+  let name =
+    document.getElementById("username").value.trim();
+
+  if(!name){
+    name="UNKNOWN";
+  }
+
+  document.getElementById("home").style.display="none";
+
+  document.getElementById("scanner").style.display="flex";
+
+  document.getElementById("terminal").innerHTML="";
+
+  document.getElementById("progress").style.width="0%";
+
+  runTerminal(name);
+
+}
+
+
+function runTerminal(name){
+
+  let index=0;
+
+  const terminal =
+    document.getElementById("terminal");
+
+  const progress =
+    document.getElementById("progress");
+
+  const interval=setInterval(()=>{
+
+    if(index < terminalMessages.length){
+
+      const line =
+        document.createElement("div");
+
+      line.textContent =
+        terminalMessages[index];
+
+      terminal.appendChild(line);
+
+      progress.style.width =
+        ((index+1)/terminalMessages.length)*100+"%";
+
+      index++;
+
+    }else{
+
+      clearInterval(interval);
+
+      setTimeout(()=>{
+        showResult(name);
+      },600);
+
+    }
+
+  },220);
+
+}
+
+
+function showResult(name){
+
+  document.getElementById("scanner").style.display="none";
+
+  const result =
+    document.getElementById("result");
+
+  result.style.display="block";
+
+  result.classList.add("glitch");
+
+  setTimeout(()=>{
+    result.classList.remove("glitch");
+  },600);
+
+
+  const score=random(15,100);
+
+  const money=random(5,100);
+  const love=random(5,100);
+  const game=random(5,100);
+  const social=random(5,100);
+  const chaos=random(5,100);
+
+
+  document.getElementById("resultName").textContent =
+    name.toUpperCase();
+
+
+  animateScore(score);
+
+
+  setBar("money",money);
+  setBar("love",love);
+  setBar("game",game);
+  setBar("social",social);
+  setBar("chaos",chaos);
+
+
+  const degree=score*3.6;
+
+  document.getElementById("scoreRing").style.background =
+    `conic-gradient(
+      #00ff9d 0deg,
+      #00eaff ${degree}deg,
+      rgba(255,255,255,.05) ${degree}deg
+    )`;
+
+
+  document.getElementById("prediction").textContent =
+    predictions[
+      random(0,predictions.length-1)
     ];
 
-    function random(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+
+  const classification =
+    document.getElementById("classification");
+
+
+  if(score>=90){
+
+    classification.textContent=
+      "CLASSIFICATION: LEGENDARY";
+
+  }
+
+  else if(score>=75){
+
+    classification.textContent=
+      "CLASSIFICATION: ELITE";
+
+  }
+
+  else if(score>=50){
+
+    classification.textContent=
+      "CLASSIFICATION: STABLE";
+
+  }
+
+  else if(score>=30){
+
+    classification.textContent=
+      "CLASSIFICATION: UNSTABLE";
+
+  }
+
+  else{
+
+    classification.textContent=
+      "CLASSIFICATION: DANGER";
+
+    classification.style.color="#ff315c";
+
+    classification.style.borderColor=
+      "rgba(255,49,92,.5)";
+
+  }
+
+}
+
+
+function animateScore(target){
+
+  const el =
+    document.getElementById("score");
+
+  let value=0;
+
+  const speed =
+    Math.max(10,800/target);
+
+  const interval=setInterval(()=>{
+
+    value++;
+
+    el.textContent =
+      String(value).padStart(2,"0");
+
+    if(value>=target){
+
+      clearInterval(interval);
+
     }
 
-    function scanLuck() {
+  },speed);
 
-      const input = document.getElementById("name");
+}
 
-      const name =
-        input.value.trim() || "Necunoscut";
 
-      const score = random(25, 100);
-      const money = random(10, 100);
-      const love = random(10, 100);
-      const game = random(10, 100);
-      const social = random(10, 100);
+function setBar(name,value){
 
-      document.getElementById("start").style.display = "none";
-      document.getElementById("result").style.display = "block";
+  document.getElementById(
+    name+"Number"
+  ).textContent=value+"%";
 
-      document.getElementById("resultName").textContent =
-        name + ", acesta este scorul tău";
+  setTimeout(()=>{
 
-      animateScore(score);
+    document.getElementById(
+      name+"Bar"
+    ).style.width=value+"%";
 
-      setStat("money", money);
-      setStat("love", love);
-      setStat("game", game);
-      setStat("social", social);
+  },150);
 
-      document.getElementById("prediction").textContent =
-        predictions[random(0, predictions.length - 1)];
+}
 
-      const degrees = score * 3.6;
 
-      document.getElementById("scoreRing").style.background =
-        `conic-gradient(
-          #22d3ee 0deg,
-          #8b5cf6 ${degrees}deg,
-          rgba(255,255,255,.08) ${degrees}deg
-        )`;
+function restart(){
 
-      if (score >= 80) {
-        confetti();
-      }
-    }
+  document.getElementById("result").style.display="none";
 
-    function animateScore(target) {
+  document.getElementById("home").style.display="flex";
 
-      const scoreEl = document.getElementById("score");
+  document
+    .querySelectorAll(".bar-fill")
+    .forEach(bar=>{
+      bar.style.width="0%";
+    });
 
-      let current = 0;
+  const classification =
+    document.getElementById("classification");
 
-      const interval = setInterval(() => {
+  classification.style.color="";
+  classification.style.borderColor="";
 
-        current++;
+}
 
-        scoreEl.textContent = current;
 
-        if (current >= target) {
-          clearInterval(interval);
-        }
+document
+.getElementById("username")
+.addEventListener("keydown",e=>{
 
-      }, 15);
-    }
+  if(e.key==="Enter"){
+    startScan();
+  }
 
-    function setStat(type, value) {
+});
 
-      document.getElementById(type + "Value").textContent =
-        value + "%";
 
-      setTimeout(() => {
-        document.getElementById(type + "Bar").style.width =
-          value + "%";
-      }, 100);
-    }
+/* FLOATING PARTICLES */
 
-    function resetScan() {
+for(let i=0;i<45;i++){
 
-      document.getElementById("result").style.display = "none";
-      document.getElementById("start").style.display = "block";
+  const p =
+    document.createElement("div");
 
-      document.querySelectorAll(".bar-fill").forEach(bar => {
-        bar.style.width = "0";
-      });
-    }
+  p.className="particle";
 
-    function confetti() {
+  p.style.left =
+    Math.random()*100+"vw";
 
-      const colors = [
-        "#8b5cf6",
-        "#22d3ee",
-        "#ec4899",
-        "#34d399",
-        "#facc15"
-      ];
+  p.style.animationDuration =
+    5+Math.random()*12+"s";
 
-      for (let i = 0; i < 80; i++) {
+  p.style.animationDelay =
+    -Math.random()*10+"s";
 
-        const piece =
-          document.createElement("div");
+  p.style.opacity =
+    Math.random()*.7;
 
-        piece.className = "confetti";
+  document.body.appendChild(p);
 
-        piece.style.left =
-          Math.random() * 100 + "vw";
+}
 
-        piece.style.background =
-          colors[random(0, colors.length - 1)];
-
-        piece.style.animationDuration =
-          2 + Math.random() * 3 + "s";
-
-        piece.style.animationDelay =
-          Math.random() * .5 + "s";
-
-        document.body.appendChild(piece);
-
-        setTimeout(() => {
-          piece.remove();
-        }, 5500);
-
-      }
-    }
-
-    document
-      .getElementById("name")
-      .addEventListener("keydown", function(e) {
-
-        if (e.key === "Enter") {
-          scanLuck();
-        }
-
-      });
-
-  </script>
+</script>
 
 </body>
 </html>
